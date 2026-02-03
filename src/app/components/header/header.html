@@ -1,0 +1,88 @@
+<header class="header">
+  <div class="header-container">
+    <div class="logo">
+      <div class="logo-icon">
+
+      </div>
+      <span class="logo-text">DISLICORES<span class="logo-accent">AGS</span></span>
+    </div>
+
+    <nav class="nav">
+      
+      <a href="#" class="nav-link">Inicio</a>
+      <a href="#" class="nav-link">Whisky</a>
+      <a href="#" class="nav-link">Ron</a>
+      <a href="#" class="nav-link">Gin</a>
+      <a href="#" class="nav-link">Vodka</a>
+      <a href="#" class="nav-link">Ofertas</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="icon-btn search-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+
+      <button class="icon-btn cart-btn" (click)="toggleCart()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 2L7 6M17 6l-2-4M7 6h10l1 14H6L7 6z"/>
+        </svg>
+        <span class="cart-badge" *ngIf="cartItemCount > 0">{{ cartItemCount }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Cart Overlay -->
+  <div class="cart-overlay" [class.active]="isCartOpen" (click)="toggleCart()"></div>
+  
+  <!-- Cart Sidebar -->
+  <div class="cart-sidebar" [class.active]="isCartOpen">
+    <div class="cart-header">
+      <h2>Tu Carrito</h2>
+      <button class="close-btn" (click)="toggleCart()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="cart-content">
+      <div *ngIf="cartItems.length === 0" class="cart-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M9 2L7 6M17 6l-2-4M7 6h10l1 14H6L7 6z"/>
+        </svg>
+        <p>Tu carrito está vacío</p>
+      </div>
+
+      <div class="cart-items" *ngIf="cartItems.length > 0">
+        <div class="cart-item" *ngFor="let item of cartItems">
+          <img [src]="item.product.image" [alt]="item.product.name" class="item-image">
+          <div class="item-details">
+            <h3>{{ item.product.name }}</h3>
+            <p class="item-price">{{ formatPrice(item.product.price) }}</p>
+            <div class="quantity-controls">
+              <button (click)="updateQuantity(item.product.id, item.quantity - 1)">-</button>
+              <span>{{ item.quantity }}</span>
+              <button (click)="updateQuantity(item.product.id, item.quantity + 1)">+</button>
+            </div>
+          </div>
+          <button class="remove-btn" (click)="removeItem(item.product.id)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-footer" *ngIf="cartItems.length > 0">
+      <div class="cart-total">
+        <span>Total:</span>
+        <span class="total-amount">{{ formatPrice(cartTotal) }}</span>
+      </div>
+      <button class="checkout-btn" (click)="sendToWhatsApp()">Finalizar Compra</button>
+    </div>
+  </div>
+</header>

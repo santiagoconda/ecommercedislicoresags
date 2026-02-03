@@ -1,0 +1,101 @@
+<div class="chatbot-container">
+  <!-- Botón flotante para abrir el chat -->
+  <button class="chat-toggle-btn" (click)="toggleChat()" [class.active]="isChatOpen">
+    <svg *ngIf="!isChatOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <svg *ngIf="isChatOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M18 6L6 18M6 6l12 12"/>
+    </svg>
+  </button>
+
+  <!-- Ventana del chat -->
+  <div class="chat-window" [class.active]="isChatOpen">
+    <!-- Header del chat -->
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <div class="bot-avatar">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+            <circle cx="8" cy="11" r="1.5"/>
+            <circle cx="16" cy="11" r="1.5"/>
+            <path d="M12 17c-1.66 0-3-1.34-3-3h6c0 1.66-1.34 3-3 3z"/>
+          </svg>
+        </div>
+        <div class="bot-info">
+          <h3>Dis Chat</h3>
+          <span class="status">En línea</span>
+        </div>
+      </div>
+      <button class="clear-chat-btn" (click)="clearChat()" title="Nueva conversación">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mensajes -->
+    <div class="chat-messages" #messagesContainer>
+      <div 
+        *ngFor="let message of messages" 
+        class="message"
+        [class.user-message]="message.role === 'user'"
+        [class.assistant-message]="message.role === 'assistant'">
+        
+        <div class="message-avatar" *ngIf="message.role === 'assistant'">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+          </svg>
+        </div>
+
+        <div class="message-content">
+          <div class="message-bubble">
+            {{ message.content }}
+          </div>
+          <span class="message-time">{{ formatTime(message.timestamp) }}</span>
+        </div>
+      </div>
+
+      <!-- Indicador de escritura -->
+      <div class="message assistant-message" *ngIf="isTyping">
+        <div class="message-avatar">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+          </svg>
+        </div>
+        <div class="message-content">
+          <div class="message-bubble typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input de mensaje -->
+    <div class="chat-input-container">
+      <div class="chat-input-wrapper">
+        <textarea
+          [(ngModel)]="userInput"
+          (keypress)="handleKeyPress($event)"
+          placeholder="Escribe tu mensaje..."
+          rows="1"
+          maxlength="500"
+          [disabled]="isTyping"
+        ></textarea>
+        <button 
+          class="send-btn" 
+          (click)="sendMessage()"
+          [disabled]="!userInput.trim() || isTyping">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="chat-footer-text">
+        Powered by Claude AI
+      </div>
+    </div>
+  </div>
+</div>
